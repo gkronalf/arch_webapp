@@ -1,0 +1,4 @@
+---
+db_user: otus_user
+db_password: pass_user
+db_name: app1
