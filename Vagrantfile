@@ -9,6 +9,7 @@ MACHINES = {
         :box_name => OS,
         :vm_name => "frontEnd",
         #:public => {:ip => "10.10.10.1", :adapter => 1},
+        :web => "frontEnd",
         :net => [   
                     #ip, adpter, netmask, virtualbox__intnet
                     ["192.168.255.1", 2, "255.255.255.0",  "router-net"], 
@@ -52,14 +53,14 @@ MACHINES = {
                 ]
   },
 
-  :backup => {
-   :box_name => "ubuntu/jammy64",
-   :vm_name => "backup",
-   :net => [
-              ["192.168.255.250",  2, "255.255.255.0",  "router-net"],
-              ["192.168.50.100",  8,  "255.255.255.0"],
-           ]
-},
+#   :backup => {
+#    :box_name => "ubuntu/jammy64",
+#    :vm_name => "backup",
+#    :net => [
+#               ["192.168.255.250",  2, "255.255.255.0",  "router-net"],
+#               ["192.168.50.100",  8,  "255.255.255.0"],
+#            ]
+# },
 
 #   :office2Router => {
 #        :box_name => "ubuntu/jammy64",
@@ -95,6 +96,9 @@ Vagrant.configure("2") do |config|
        end
 
       boxconfig[:net].each do |ipconf|
+        if boxconfig.key?(:web)
+          box.vm.network "forwarded_port", guest: 80, host: 8080
+        end
         box.vm.network("private_network", ip: ipconf[0], adapter: ipconf[1], netmask: ipconf[2], virtualbox__intnet: ipconf[3])
       end
 

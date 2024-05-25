@@ -3,168 +3,29 @@
 - name: "Install webserver"
   hosts: frontServers
   become: true
-
-  # vars_files:
-  # - vars.yaml
-  vars:
-    db_user: otus_user
-    db_password: pass_user
-    db_name: app1
-
-  tasks:
-  - name: "Install nginx"
-    tags: "nginx"
-    ansible.builtin.apt:
-      name:
-      - nginx
-      state: present
-      update_cache: true
-
-  - name: "Ensure nginx is enabled"
-    tags: "nginx"
-    systemd:
-      name: nginx
-      enabled: yes
-
-  - name: "Copy config files"
-    tags: "nginx"
-    ansible.builtin.copy:
-      src: templates/nginx/webserver.config
-      dest: /etc/nginx/sites-available/webserver.config
-      owner: root
-      group: root
-      mode: '0644'
-      follow: yes
-
-  - name: "Enabled config nginx"
-    tags: "nginx"
-    ansible.builtin.file:
-      src: /etc/nginx/sites-available/webserver.config
-      dest: /etc/nginx/sites-enabled/webserver.config
-      owner: root
-      group: root
-      state: link
-
-  - name: "Restart nginx"
-    tags: "nginx"
-    ansible.builtin.service:
-      name: nginx
-      state: restarted
+  roles:
+  - nginx_install
 
 - name: "Install backEnd"
   hosts: backEndServers
   become: true
+  roles:
+  - nodejs
 
-  tasks:
-  - name: "Install nodejs"
-    tags: "nodejs"
-    ansible.builtin.apt:
-      name:
-      - nodejs
-      state: present
-      update_cache: true
-
-  - name: "Install npm"
-    tags: "nodejs"
-    ansible.builtin.package:
-      name: npm
-
-  - name: "Creates directory project"
-    tags: "nodejs"
-    ansible.builtin.file:
-      path: /home/vagrant/nginx_server_project
-      state: directory
-      mode: '0755'
-
-  - name: "Copy config files"
-    tags: "nodejs"
-    ansible.builtin.template:
-      src: templates/nodejs/webserver.j2
-      dest: /home/vagrant/nginx_server_project/webserver.js
-      owner: vagrant
-      group: vagrant
-      mode: '0644'
-      # follow: yes
-
-  - name: "Init npm"
-    tags: "nodejs"
-    ansible.builtin.shell: 'cd /home/vagrant/nginx_server_project && npm init -y'
-    args:
-      executable: /bin/bash
-    register: outputcode
-    changed_when: outputcode.rc != 0
-
-  - name: "Copy script for start server"
-    tags: "nodejs"
-    ansible.builtin.copy:
-      src: templates/nodejs/start_server.sh
-      dest: /home/vagrant/nginx_server_project/start_server.sh
-      owner: vagrant
-      group: vagrant
-      mode: '0755'
-      follow: yes
-
-  - name: "Start server"
-    tags: "nodejs"
-    ansible.builtin.shell: 'cd /home/vagrant/nginx_server_project && ./start_server.sh'
-    args:
-      executable: /bin/bash
-    register: start_server
-    changed_when: start_server.rc != 0
-
-  # - name: "Install packages based on package.json."
-  #   community.general.npm:
-  #     path: /home/vagrant/nginx_server_project/
-
-  # - name: restart all hosts
-  #   reboot:
-  #     reboot_timeout: 120
-
-- name: "Install BD"
+- name: "Install BDServers"
   hosts: BDServers
+  become: true
+  roles:
+  - postgres_install
+  - repmgr
+  
+- name: "Start webserver"
+  hosts: backEndServers
   become: true
 
   tasks:
-  - name: "Install postgres"
-    tags: "postgres"
-    ansible.builtin.apt:
-      name:
-      - postgresql
-      state: present
-      update_cache: true
-
-  - name: "Find out if PostgreSQL is initialized"
-    tags: "postgres"
-    ansible.builtin.stat:
-      path: "/var/lib/pgsql/data/pg_hba.conf"
-    register: postgres_data
-
-  # - name: "Initialize PostgreSQL"
-  #   tags: "postgres"
-  #   shell: "postgresql-setup initdb"
-  #   args:
-  #     executable: /bin/bash
-  #   register: postgre
-  #   changed_when: postgre.rc != 0
-  #   when: not postgres_data.stat.exists
- 
-  - name: "Start and enable services"
-    tags: "postgres"
-    service: "name={{ item }} state=started enabled=yes"
-    with_items:
-      - postgresql
-
-  - name: "Create app database"
-    tags: "postgres"
-    postgresql_db:
-      state: present
-      name: "{{ db_name }}"
-    become: yes
-    become_user: postgres
-
-  handlers:
-    - name: "restart postgres"
-      service: 
-        name: postgresql
-        state: restarted
-    
+  - name: "Start server nodejs"
+    tags: "nodejs"
+    ansible.builtin.command: '/home/vagrant/nginx_server_project/start_server.sh'
+    register: start_server
+    changed_when: start_server.rc != 0
