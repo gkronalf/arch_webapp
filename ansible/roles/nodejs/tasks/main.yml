@@ -38,15 +38,35 @@
   register: outputcode
   changed_when: outputcode.rc != 0
 
-- name: "Copy script for start server"
+- name: "Create service file"
   tags: "nodejs"
-  ansible.builtin.copy:
-    src: templates/nodejs/start_server.sh
-    dest: /home/vagrant/nginx_server_project/start_server.sh
-    owner: vagrant
-    group: vagrant
-    mode: '0755'
-    follow: yes
+  template:
+    src: templates/nodejs/service
+    dest: /etc/systemd/system/nodejs.service
+  register: service_conf
+
+- name: "Reload systemd daemon"
+  tags: "nodejs"
+  systemd:
+    daemon_reload: yes
+  when: service_conf.changed
+
+- name: "Start NodeJS service"
+  tags: "nodejs"
+  service:
+    name: nodejs
+    state: started
+    enabled: yes
+
+# - name: "Copy script for start server"
+#   tags: "nodejs"
+#   ansible.builtin.copy:
+#     src: templates/nodejs/start_server.sh
+#     dest: /home/vagrant/nginx_server_project/start_server.sh
+#     owner: vagrant
+#     group: vagrant
+#     mode: '0755'
+#     follow: yes
 
   # - name: "Start server"
   #   tags: "nodejs"

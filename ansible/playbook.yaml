@@ -19,13 +19,13 @@
   - postgres_install
   - repmgr
   
-- name: "Start webserver"
-  hosts: backEndServers
-  become: true
+# - name: "Start webserver"
+#   hosts: backEndServers
+#   become: true
 
-  tasks:
-  - name: "Start server nodejs"
-    tags: "nodejs"
-    ansible.builtin.command: '/home/vagrant/nginx_server_project/start_server.sh'
-    register: start_server
-    changed_when: start_server.rc != 0
+#   tasks:
+#   - name: "Start server nodejs"
+#     tags: "nodejs"
+#     ansible.builtin.command: '/home/vagrant/nginx_server_project/start_server.sh'
+#     register: start_server
+#     changed_when: start_server.rc != 0
