@@ -12,4 +12,6 @@ host    replication     all             127.0.0.1/32               scram-sha-256
 host    replication     all             ::1/128                    scram-sha-256
 host    all             replication     192.168.255.100/32            scram-sha-256
 host    replication     replication     192.168.255.200/32         trust
+host    replication     barman          192.168.255.250/32         trust
+host    all             barman          192.168.255.250/32         trust
 host    all             postgres        192.168.255.200/32         scram-sha-256

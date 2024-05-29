@@ -11,6 +11,7 @@
     - libpq-dev
     - barman
     - net-tools
+    - barman-cli
     state: present
     update_cache: true
 

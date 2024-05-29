@@ -53,14 +53,14 @@ MACHINES = {
                 ]
   },
 
-#   :backup => {
-#    :box_name => "ubuntu/jammy64",
-#    :vm_name => "backup",
-#    :net => [
-#               ["192.168.255.250",  2, "255.255.255.0",  "router-net"],
-#               ["192.168.50.100",  8,  "255.255.255.0"],
-#            ]
-# },
+  :backup => {
+   :box_name => "ubuntu/jammy64",
+   :vm_name => "backup",
+   :net => [
+              ["192.168.255.250",  2, "255.255.255.0",  "router-net"],
+              ["192.168.50.100",  8,  "255.255.255.0"],
+           ]
+},
 
 #   :office2Router => {
 #        :box_name => "ubuntu/jammy64",
