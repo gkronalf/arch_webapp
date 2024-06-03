@@ -1,5 +1,16 @@
 ---
 
+- name: "Install tools"
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set timezone Moscow
+      community.general.timezone:
+        name: Europe/Moscow
+
+    
+
 - name: "Install webserver"
   hosts: frontServers
   become: true
@@ -24,14 +35,3 @@
   become: true
   roles:
   - barman_install
-  
-# - name: "Start webserver"
-#   hosts: backEndServers
-#   become: true
-
-#   tasks:
-#   - name: "Start server nodejs"
-#     tags: "nodejs"
-#     ansible.builtin.command: '/home/vagrant/nginx_server_project/start_server.sh'
-#     register: start_server
-#     changed_when: start_server.rc != 0
