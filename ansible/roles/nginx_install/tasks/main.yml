@@ -15,11 +15,26 @@
     name: nginx
     enabled: yes
 
+- name: "Redirecting error logs on rsyslog"
+  tags: "nginx"
+  lineinfile:
+    dest: '/etc/nginx/nginx.conf'
+    regexp: 'error_log /var/log/nginx/error.log;'
+    line: '        error_log syslog:server=192.168.255.250,tag=nginx_error;'
+
+- name: "Redirecting access logs on rsyslog"
+  tags: "nginx"
+  lineinfile:
+    dest: '/etc/nginx/nginx.conf'
+    regexp: 'access_log /var/log/nginx/access.log;'
+    line: '        access_log syslog:server=192.168.255.250,tag=nginx_access,facility=local6,severity=info;'
+
+
 - name: "Copy config files"
   tags: "nginx"
   ansible.builtin.copy:
     src: templates/nginx/webserver.config
-    dest: /etc/nginx/sites-available/webserver.config
+    dest: /etc/nginx/sites-available/web-monkey.ru.config
     owner: root
     group: root
     mode: '0644'
@@ -28,11 +43,39 @@
 - name: "Enabled config nginx"
   tags: "nginx"
   ansible.builtin.file:
-    src: /etc/nginx/sites-available/webserver.config
-    dest: /etc/nginx/sites-enabled/webserver.config
+    src: /etc/nginx/sites-available/web-monkey.ru.config
+    dest: /etc/nginx/sites-enabled/web-monkey.ru.config
     owner: root
     group: root
     state: link
+
+# - name: "Fetch files key"
+#   tags: "cert"
+#   fetch:
+#     src: /etc/ssl/private/nginx-selfsigned.key
+#     dest: templates/nginx/nginx-selfsigned.key
+#     follow: yes
+
+# - name: "Fetch files cert"
+#   tags: "cert"
+#   fetch:
+#     src: /etc/ssl/certs/nginx-selfsigned.crt
+#     dest: templates/nginx/nginx-selfsigned.crt
+#     follow: yes
+
+# - name: "Fetch files self-signed.conf"
+#   tags: "cert"
+#   fetch:
+#     src: /etc/nginx/snippets/self-signed.conf
+#     dest: templates/nginx/self-signed.conf
+#     follow: yes
+
+# - name: "Fetch files ssl-params.conf"
+#   tags: "cert"
+#   fetch:
+#     src: /etc/nginx/snippets/ssl-params.conf
+#     dest: templates/nginx/ssl-params.conf
+#     follow: yes
 
 - name: "Restart nginx"
   tags: "nginx"

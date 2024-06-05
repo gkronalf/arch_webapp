@@ -19,7 +19,6 @@
   tags: "postgres"
   community.general.locale_gen: 
     name: 'en_US.UTF-8'
-      # name: '{{ _locale_gen }}'
     state: present
   register: locale_gen_result
 
@@ -43,7 +42,7 @@
     mode: 0644
     follow: yes
 
-- name: Copy files configured postresql.conf
+- name: Copy files configured pg_ident.conf
   tags: "postgres"
   ansible.builtin.template:
     src: templates/postgres/pg_ident.conf.j2
@@ -53,16 +52,24 @@
     mode: 0644
     follow: yes
 
+- name: "Copy files configured rsyslog"
+  tags: "postgres"
+  ansible.builtin.template:
+    src: templates/postgres/rsyslog.conf.j2
+    dest: /etc/rsyslog.d/remote_logs.conf
+    owner: "root"
+    group: "root"
+    mode: 0644
+    follow: yes
+
+- name: "Restart service rsyslog"
+  tags: "postgres"
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted
+
 - name: "Restart service PostgreSQL-14"
   tags: "postgres"
   ansible.builtin.service:
     name: postgresql
     state: restarted
-
-# - name: "Init claster"
-#   tags: "postgres"
-#   remote_user: postgres
-#   expect:
-#     ansible.builtin.command: '/usr/lib/postgresql/14/bin/initdb /var/lib/postgresql/14/main'
-#   when: (ansible_hostname == "masterBD")
-

@@ -4,13 +4,8 @@ upstream node_app_servers {
        server 192.168.255.20:3000;
 }
 server{
-   listen 443 ssl;
-   listen [::]:443 ssl;
-   include snippets/self-signed.conf;
-   include snippets/ssl-params.conf;
-
-   server_name web-monkey.ru www.web-monkey.ru;
-
+   listen 80;
+   server_name wach.quest;
    location / {
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header Host $host;
@@ -23,13 +18,4 @@ server{
       #     proxy_redirect off;
       # }
    }
-}
-
-server {
-   listen 80;
-   listen [::]:80;
-
-   server_name web-monkey.ru www.web-monkey.ru;
-
-   return 302 http://node_app_servers/$request_uri;
 }

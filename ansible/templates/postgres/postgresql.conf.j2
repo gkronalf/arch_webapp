@@ -430,7 +430,7 @@ hot_standby_feedback = on             # send info from standby to prevent
 
 # - Where to Log -
 
-#log_destination = 'stderr'             # Valid values are combinations of
+log_destination = 'syslog'             # Valid values are combinations of
                                         # stderr, csvlog, syslog, and eventlog,
                                         # depending on platform.  csvlog
                                         # requires logging_collector to be on.
@@ -463,18 +463,18 @@ log_truncate_on_rotation = on         # If on, an existing log file with the
                                         # in all cases.
 
 # These are relevant when logging to syslog:
-#syslog_facility = 'LOCAL0'
-#syslog_ident = 'postgres'
-#syslog_sequence_numbers = on
-#syslog_split_messages = on
+syslog_facility = 'LOCAL0'
+syslog_ident = 'postgres'
+syslog_sequence_numbers = on
+syslog_split_messages = on
 
 # This is only relevant when logging to eventlog (Windows):
 # (change requires restart)
-#event_source = 'PostgreSQL'
+event_source = 'PostgreSQL'
 
 # - When to Log -
 
-#log_min_messages = warning             # values in order of decreasing detail:
+log_min_messages = warning             # values in order of decreasing detail:
                                         #   debug5
                                         #   debug4
                                         #   debug3
@@ -488,7 +488,7 @@ log_truncate_on_rotation = on         # If on, an existing log file with the
                                         #   fatal
                                         #   panic
 
-#log_min_error_statement = error        # values in order of decreasing detail:
+log_min_error_statement = error        # values in order of decreasing detail:
                                         #   debug5
                                         #   debug4
                                         #   debug3

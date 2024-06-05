@@ -1,0 +1,23 @@
+---
+# tasks file for rsyslog
+
+- name: "Copy config file"
+  copy:
+    src: ./roles/rsyslog/rsyslog.conf
+    dest: /etc/rsyslog.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "Open port 60"
+  lineinfile: dest='/etc/audit/auditd.conf'
+    regexp='##tcp_listen_port = 60'
+    line='tcp_listen_port = 60'
+
+# - name: "Restart auditd"
+#   shell: "service auditd restart"
+
+- name: "start rsyslog"
+  service:
+    name: rsyslog
+    state: restarted
