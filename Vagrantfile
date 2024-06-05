@@ -98,6 +98,7 @@ Vagrant.configure("2") do |config|
       boxconfig[:net].each do |ipconf|
         if boxconfig.key?(:web)
           box.vm.network "forwarded_port", guest: 80, host: 8080
+          box.vm.network "forwarded_port", guest: 443, host: 8443
         end
         box.vm.network("private_network", ip: ipconf[0], adapter: ipconf[1], netmask: ipconf[2], virtualbox__intnet: ipconf[3])
       end

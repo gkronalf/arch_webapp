@@ -77,6 +77,13 @@
 #     dest: templates/nginx/ssl-params.conf
 #     follow: yes
 
+# - name: "Fetch files ssl-params.conf"
+#   tags: "cert"
+#   fetch:
+#     src: /etc/nginx/dhparam.pem
+#     dest: templates/nginx/dhparam.pem
+#     follow: yes
+
 - name: "Copy files key"
   tags: "cert"
   copy:
@@ -112,6 +119,16 @@
   copy:
     src: templates/nginx/certs/ssl-params.conf
     dest: /etc/nginx/snippets/ssl-params.conf
+    owner: root
+    group: root
+    mode: '0644'
+    follow: yes
+
+- name: "Copy files dhparam.pem"
+  tags: "cert"
+  copy:
+    src: templates/nginx/certs/dhparam.pem
+    dest: /etc/nginx/dhparam.pem
     owner: root
     group: root
     mode: '0644'
