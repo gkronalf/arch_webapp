@@ -4,7 +4,7 @@ const app = express();
 const port = 3000;
 
 const pool = new Pool({
-  user: {{ ansible_hostname }},
+  user: '{{ ansible_hostname }}',
   password: 'Otus2024!',
   host: '192.168.255.100',
   port: '5432',
@@ -26,4 +26,4 @@ app.get('/', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
-})
+});

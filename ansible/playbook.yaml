@@ -16,13 +16,6 @@
   - rsyslog
   - nginx_install
 
-- name: "Install backEnd"
-  hosts: backEndServers
-  become: true
-  roles:
-  - rsyslog
-  - nodejs
-
 - name: "Install BDServers"
   hosts: BDServers
   become: true
@@ -30,6 +23,13 @@
   - rsyslog
   - postgres_install
   - repmgr
+
+- name: "Install backEnd"
+  hosts: backEndServers
+  become: true
+  roles:
+  - rsyslog
+  - nodejs
 
 - name: "Install barman"
   hosts: backupServers, BDServers

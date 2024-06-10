@@ -60,7 +60,7 @@ MACHINES = {
               ["192.168.255.250",  2, "255.255.255.0",  "router-net"],
               ["192.168.50.100",  8,  "255.255.255.0"],
            ],
-    :disk => [:disk, name: 'main', size: '60GB']
+    # :disk => [:disk, name: 'main', size: '60GB']
 },
 
 #   :office2Router => {
@@ -88,10 +88,12 @@ MACHINES = {
 Vagrant.configure("2") do |config|
   MACHINES.each do |boxname, boxconfig|
     config.vm.define boxname do |box|
-      # box.vm.disk :disk, name: 'main', size: '60GB'
       if boxconfig.key?(:disk)
-        box.vm.disk = boxconfig[:disk] 
+        box.vm.disk :disk, name: 'main', size: '60GB'
       end
+      # if boxconfig.key?(:disk)
+      #   box.vm.disk = boxconfig[:disk] 
+      # end
       box.vm.box = boxconfig[:box_name]
       box.vm.host_name = boxconfig[:vm_name]
       box.vm.provider "virtualbox" do |v|
