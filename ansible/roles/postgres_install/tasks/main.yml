@@ -52,22 +52,6 @@
     mode: 0644
     follow: yes
 
-- name: "Copy files configured rsyslog"
-  tags: "postgres"
-  ansible.builtin.template:
-    src: templates/postgres/rsyslog.conf.j2
-    dest: /etc/rsyslog.d/remote_logs.conf
-    owner: "root"
-    group: "root"
-    mode: 0644
-    follow: yes
-
-- name: "Restart service rsyslog"
-  tags: "postgres"
-  ansible.builtin.service:
-    name: rsyslog
-    state: restarted
-
 - name: "Restart service PostgreSQL-14"
   tags: "postgres"
   ansible.builtin.service:

@@ -9,24 +9,25 @@
       community.general.timezone:
         name: Europe/Moscow
 
-    
-
 - name: "Install webserver"
   hosts: frontServers
   become: true
   roles:
+  - rsyslog
   - nginx_install
 
 - name: "Install backEnd"
   hosts: backEndServers
   become: true
   roles:
+  - rsyslog
   - nodejs
 
 - name: "Install BDServers"
   hosts: BDServers
   become: true
   roles:
+  - rsyslog
   - postgres_install
   - repmgr
 
@@ -34,4 +35,5 @@
   hosts: backupServers, BDServers
   become: true
   roles:
+  - rsyslog
   - barman_install

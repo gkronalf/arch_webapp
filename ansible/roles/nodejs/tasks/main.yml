@@ -6,6 +6,7 @@
   ansible.builtin.apt:
     name:
     - nodejs
+    - postgresql-client-14
     state: present
     update_cache: true
 
@@ -32,7 +33,7 @@
 
 - name: "Init npm"
   tags: "nodejs"
-  ansible.builtin.shell: 'cd /home/vagrant/nginx_server_project && npm init -y'
+  ansible.builtin.shell: 'cd /home/vagrant/nginx_server_project && npm init -y && npm install pg && npm install express'
   args:
     executable: /bin/bash
   register: outputcode
@@ -57,30 +58,3 @@
     name: nodejs
     state: started
     enabled: yes
-
-# - name: "Copy script for start server"
-#   tags: "nodejs"
-#   ansible.builtin.copy:
-#     src: templates/nodejs/start_server.sh
-#     dest: /home/vagrant/nginx_server_project/start_server.sh
-#     owner: vagrant
-#     group: vagrant
-#     mode: '0755'
-#     follow: yes
-
-  # - name: "Start server"
-  #   tags: "nodejs"
-  #   # async: 360
-  #   ansible.builtin.shell: 'cd /home/vagrant/nginx_server_project && ./start_server.sh'
-  #   args:
-  #     executable: /bin/bash
-  #   register: start_server
-  #   changed_when: start_server.rc != 0
-
-  # - name: "Install packages based on package.json."
-  #   community.general.npm:
-  #     path: /home/vagrant/nginx_server_project/
-
-  # - name: restart all hosts
-  #   reboot:
-  #     reboot_timeout: 120

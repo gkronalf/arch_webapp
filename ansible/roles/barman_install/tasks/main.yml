@@ -33,7 +33,7 @@
     force: no
   when: (ansible_hostname == "backup")
 
-- name: fetch all public ssh keys node1
+- name: "fetch all public ssh keys masterBD"
   tags: "backup"
   shell: cat /var/lib/postgresql/.ssh/id_rsa.pub
   register: ssh_keys
@@ -113,3 +113,19 @@
   remote_user: barman
   shell: barman cron
   when: (ansible_hostname == "backup")
+
+- name: "rsyslog cinfig"
+  tags: "backup"
+  ansible.builtin.copy:
+   src: templates/barman/rsyslog.conf
+   dest: /etc/rsyslog.conf
+   owner: root
+   group: root
+   mode: '0644'
+   follow: yes
+
+- name: "restart rsyslog"
+  tags: "backup"
+  ansible.builtin.service:
+   name: rsyslog
+   state: restarted

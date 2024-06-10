@@ -10,6 +10,26 @@
     role_attr_flags: REPLICATION 
   when: (ansible_hostname == "masterBD")
 
+- name: "Create user nodejs"
+  tags: "postgres"
+  become: true
+  remote_user: postgres
+  community.postgresql.postgresql_user:
+    name: backEnd01
+    password: '{{ replicator_password }}'
+    role_attr_flags: SUPERUSER 
+  when: (ansible_hostname == "masterBD")
+
+- name: "Create user nodejs"
+  tags: "postgres"
+  become: true
+  remote_user: postgres
+  community.postgresql.postgresql_user:
+    name: backEnd02
+    password: '{{ replicator_password }}'
+    role_attr_flags: SUPERUSER 
+  when: (ansible_hostname == "masterBD")
+
 - name: "Stoped postgres on slaveServer"
   tags: "postgres"
   ansible.builtin.service:
@@ -26,9 +46,6 @@
 
 - name: "Copy files from master to slave"
   tags: "postgres"
-  # become: true
-  # become_method: su
-  # become_user: postgres
   command: 'pg_basebackup -h {{ master_ip }} -U  replication -p 5432 -D /var/lib/postgresql/14/main/ -R'
   when: (ansible_hostname == "slaveBD")
 
@@ -40,14 +57,6 @@
     group: postgres
     recurse: yes
   when: (ansible_hostname == "slaveBD")
-
-# - name: Change owner of path
-#   tags: "postgres"
-#   file:
-#     path: /var/lib/postgresql/14/main/*
-#     owner: postgres
-#     group: postgres
-#   when: (ansible_hostname == "slaveBD")
 
 - name: "Start postgresql-server on slaveServer"
   tags: "postgres"

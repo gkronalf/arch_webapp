@@ -1,21 +1,23 @@
 ---
 # tasks file for rsyslog
 
-- name: "Copy config file"
+- name: "Copy config file rsyslog.conf"
+  tags: nginx, backup, nodejs, postgres
   copy:
-    src: ./roles/rsyslog/rsyslog.conf
+    src: templates/rsyslog/rsyslog.conf
     dest: /etc/rsyslog.conf
     owner: root
     group: root
     mode: 0644
 
-- name: "Open port 60"
-  lineinfile: dest='/etc/audit/auditd.conf'
-    regexp='##tcp_listen_port = 60'
-    line='tcp_listen_port = 60'
-
-# - name: "Restart auditd"
-#   shell: "service auditd restart"
+- name: "Copy config file"
+  tags: nginx, backup, nodejs, postgres
+  copy:
+    src: templates/rsyslog/remote_logs.conf
+    dest: /etc/rsyslog.d/remote_logs.conf
+    owner: root
+    group: root
+    mode: 0644
 
 - name: "start rsyslog"
   service:

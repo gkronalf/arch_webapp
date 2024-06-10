@@ -1,0 +1,40 @@
+const http = require('http');
+const express = require('express');
+const { Client } = require('pg');
+
+const client = new Client({
+  user: 'postgres',
+  password: 'Otus2024!',
+  host: '192.168.250.100',
+  port: '5432'
+});
+
+const query = `
+SELECT * FROM TABLE otus;
+`;
+
+const server = http.createServer((req, res) => {
+  client.connect();
+  console.log(client.query(query)
+    .then(res => {
+      console.log('Query is successfully created');
+    })
+    .catch(err => {
+      console.error(err);
+    })
+    .finally(() => {
+      client.end();
+    })
+  );
+
+  res.writeHead(200, {
+    'Content-Type': 'text/plain; charset=UTF-8'
+  });
+  res.end('Hello, world! I am {{ ansible_hostname }}');
+});
+
+
+ 
+server.listen(3000, '0.0.0.0', () => {
+  console.log('Start NodeJS Server on http://{{ ansible_hostname }}:3000/');
+});
