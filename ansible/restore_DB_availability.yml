@@ -1,10 +1,10 @@
 ---
 
-- name: "Switch role master slaveServer"
-  hosts: slaveBD
-  remote_user: postgres
+# - name: "Switch role master slaveServer"
+#   hosts: slaveBD
+#   remote_user: postgres
 
-  tasks:
+#   tasks:
 
   # - name: "Check status promote"
   #   become: true
@@ -21,10 +21,9 @@
   #     msg: "{{ status_claster.stat.exists }}"
   #   when: status_claster.stat.islnk is defined
 
-  - name: "Promote slaveBD master"
-    remote_user: postgres
-    command: '/usr/lib/postgresql/14/bin/pg_ctl promote -D /etc/postgresql/14/main/'
-    # when: status_claster.stat.islnk is not defined
+  # - name: "Promote slaveBD master"
+  #   command: '/usr/lib/postgresql/14/bin/pg_ctl promote -D /etc/postgresql/14/main/'
+  #   # when: status_claster.stat.islnk is not defined
 
 - name: "Switch backEnd servers on work slave server DB"
   hosts: backEnd01, backEnd02
