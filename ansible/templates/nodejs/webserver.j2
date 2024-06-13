@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.get('/', async (req, res) => {
   try{
-    const query = 'SELECT * FROM email;';
+    const query = 'SELECT * FROM users;';
     const { rows } = await pool.query(query);
     res.status(200).json(rows);
   }catch(err) {

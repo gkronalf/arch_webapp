@@ -2,6 +2,8 @@
 # vim: set ft=ruby :
 
 ENV['VAGRANT_SERVER_URL']="https://vagrant.elab.pro"
+# ENV['VAGRANT_SERVER_URL']="https://app.vagrantup.com/"
+
 OS="ubuntu/jammy64"
 
 MACHINES = {
@@ -60,7 +62,7 @@ MACHINES = {
               ["192.168.255.250",  2, "255.255.255.0",  "router-net"],
               ["192.168.50.100",  8,  "255.255.255.0"],
            ],
-    # :disk => [:disk, name: 'main', size: '60GB']
+    # :disk => []
 },
 
 #   :office2Router => {
@@ -91,9 +93,6 @@ Vagrant.configure("2") do |config|
       if boxconfig.key?(:disk)
         box.vm.disk :disk, name: 'main', size: '60GB'
       end
-      # if boxconfig.key?(:disk)
-      #   box.vm.disk = boxconfig[:disk] 
-      # end
       box.vm.box = boxconfig[:box_name]
       box.vm.host_name = boxconfig[:vm_name]
       box.vm.provider "virtualbox" do |v|
@@ -113,10 +112,12 @@ Vagrant.configure("2") do |config|
         box.vm.network "public_network", boxconfig[:public]
       end
 
-      box.vm.provision "shell", inline: <<-SHELL
-        mkdir -p ~root/.ssh
-        cp ~vagrant/.ssh/auth* ~root/.ssh
-      SHELL
+      # box.vm.provision "shell", inline: <<-SHELL
+      #   mkdir -p ~root/.ssh
+      #   cp ~vagrant/.ssh/auth* ~root/.ssh
+      # SHELL
     end
+    # box.vm.provision :file, source: '.vagrant/machines/backEnd02/virtualbox/private_key', destination: '/vagrant/machines/backEnd02/virtualbox/private_key'
+    config.vm.synced_folder '.', '/vagrant', disabled: true
   end
 end

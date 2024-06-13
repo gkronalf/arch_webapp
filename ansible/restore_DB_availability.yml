@@ -1,0 +1,44 @@
+---
+
+- name: "Switch role master slaveServer"
+  hosts: slaveBD
+  remote_user: postgres
+
+  tasks:
+
+  # - name: "Check status promote"
+  #   become: true
+  #   ansible.builtin.stat: 
+  #     path: /var/lib/postgresql/14/main/postmaster.pid
+  #   register: status_claster
+
+  # - name: "Defined var stat"
+  #   debug:
+  #     var: status_claster
+
+  # - name: "See status_claster"
+  #   debug:
+  #     msg: "{{ status_claster.stat.exists }}"
+  #   when: status_claster.stat.islnk is defined
+
+  - name: "Promote slaveBD master"
+    remote_user: postgres
+    command: '/usr/lib/postgresql/14/bin/pg_ctl promote -D /etc/postgresql/14/main/'
+    # when: status_claster.stat.islnk is not defined
+
+- name: "Switch backEnd servers on work slave server DB"
+  hosts: backEnd01, backEnd02
+  become: true
+
+  tasks:
+  - name: "Switch backEnd servers on work slave server DB"
+    lineinfile: 
+      dest: /home/vagrant/nginx_server_project/webserver.js
+      regexp: "host: '192.168.255.100',"
+      line: "  host: '192.168.255.200',"
+      state: present
+
+  - name: "Restart service nodejs"
+    service:
+      name: nodejs
+      state: restarted
